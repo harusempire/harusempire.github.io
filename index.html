@@ -304,6 +304,7 @@
             });
 
             closePopup.addEventListener('click', function() {
+                copyLinkButton.innerText = 'Copy';
                 popup.classList.remove('active');
                 createGiftButton.innerText = 'CREATE GIFT';
                 createGiftButton.disabled = true;
