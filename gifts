@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gift Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #F2ABED;
+            transition: background-color 0.5s ease;
+            padding: 20px;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .big-text {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        .small-text {
+            font-size: 1em;
+            margin: 20px 0;
+        }
+        .gift {
+            height: 250px;
+            width: auto;
+            display: inline-block;
+            margin: 20px 0;
+            cursor: pointer;
+            animation: shake 1s infinite;
+        }
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .hidden {
+            display: none;
+        }
+          .pulse-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+          }
+
+          @keyframes pulse {
+            0% {
+              transform: scale(1);
+              box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+            70% {
+              transform: scale(1.2);
+              box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+            100% {
+              transform: scale(1);
+              box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+          }
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="big-text">You got a gift from…</div>
+    <div id="fromWhom" style="color: black;" class="big-text"></div>
+    <div class="small-text">Tap! Tap!</div>
+    <img src="https://pngimg.com/d/gift_PNG100325.png" alt="Gift" class="gift" id="giftImage" draggable="false">
+    <div id="message" style="color: white; background-color: #5A3B65; padding-top: 10px; padding-bottom: 10px; border-radius: 10px; margin-top: 30px;" class="big-text hidden"></div>
+
+    <div id="afterGift" class="hidden">
+        <p style="margin-top: 30px;" class="small-text">Now it’s your time to make a gift for them… or someone else 👀</p>
+        <button style="padding: 20px; color: black; background-color: white; border-radius: 20px; font-size: 25px;" class="pulse-button" onclick="redirectToCreateGift()">CREATE GIFT</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function decodeBase64(input) {
+            return decodeURIComponent(escape(window.atob(input)));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const bgColorParam = getQueryParam('c');
+            const fromWhomParam = getQueryParam('fw');
+            const messageParam = getQueryParam('t');
+
+            if (bgColorParam) {
+                try {
+                    const decodedColor = decodeBase64(bgColorParam);
+                    document.body.style.backgroundColor = decodedColor;
+                } catch (e) {
+                    console.error('Invalid base64 color parameter');
+                }
+            }
+
+            if (fromWhomParam) {
+                document.getElementById('fromWhom').textContent = decodeBase64(fromWhomParam);
+            }
+
+            const giftImage = document.getElementById('giftImage');
+            const messageDiv = document.getElementById('message');
+            if (messageParam) {
+                giftImage.addEventListener('click', () => {
+                    giftImage.style.animation = 'shake 0.1s infinite';
+                    setTimeout(() => {
+                        giftImage.classList.add('hidden');
+                        document.querySelector('.small-text').classList.add('hidden');
+                        messageDiv.textContent = decodeBase64(messageParam);
+
+                        messageDiv.classList.remove('hidden');
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+
+
+                        document.getElementById('afterGift').classList.remove('hidden');
+                    }, 3000);
+
+                });
+            }
+        });
+
+        function redirectToCreateGift() {
+            window.location.href = '/';
+        }
+    </script>
+    <script>
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        function ctrlShiftKey(e, keyCode) {
+            return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
+        }
+
+        document.onkeydown = (e) => {
+        if (
+            event.keyCode === 123 ||
+            ctrlShiftKey(e, 'I') ||
+            ctrlShiftKey(e, 'J') ||
+            ctrlShiftKey(e, 'C') ||
+            (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0))
+        )
+            return false;
+        };
+        setInterval(() => {debugger;}, 100);
+    </script>
+</body>
+</html>
